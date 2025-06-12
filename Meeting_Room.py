@@ -37,9 +37,11 @@ class Meeting_Room:
         self.ending_time = False
         self.input_chat = InputBox(80,500,100,50, pygame.font.Font(None, 32))
         self.chat_open =False
+        self.dead = False
         self.events = []
         self.had_voted = []
         self.votes = {}
+        self.disconnected_colors= []
 
         if DEBUG:
             print("\n===== MEETING ROOM STATE =====")
@@ -63,6 +65,7 @@ class Meeting_Room:
 
 
 
+
     def main_loop(self):
         try:
             global t,all_to_die
@@ -72,19 +75,18 @@ class Meeting_Room:
             self.screen.fill((0,0,0))
             self.draw()
 
-            while len(self.had_voted) != len(self.players.keys()) and not self.ending_time:
+            while (len(self.had_voted) != self.are_alive()) and not self.ending_time:
                 events = pygame.event.get()
                 for event in events:
                     if event.type == pygame.QUIT:
                         print('EXIT')
                         self.end_meeting()
-                        exit()
 
                 if self.chat_open:
                     self.chat(events)
                 else:
                     for color,button in self.Buttons.items():
-                        if button.is_button_pressed(events)and self.player.color not in self.had_voted:
+                        if self.player.alive and button.is_button_pressed(events)and self.player.color not in self.had_voted:
                             self.voted = color
                             send_with_size(self.sock,f'VOTE~{self.room}~{self.voted}~{self.player.color}'.encode())
                             print(self.voted)
@@ -130,6 +132,13 @@ class Meeting_Room:
             self.end_meeting()
             exit()
 
+    def are_alive(self):
+        cnt = 0
+        for color,player in self.players.items():
+            if player.alive:
+                cnt +=1
+        return cnt
+
     def voted_anim(self,color):
         self.screen.fill((0,0,0))
         self.show_text(f'{color} Has Been Eliminated',SIZE[0]//2-70,SIZE[1]//2-20,color)
@@ -148,6 +157,11 @@ class Meeting_Room:
                         self.has_voted(data)
                     elif 'GMSG' in data:
                         self.recive_message(data)
+                    elif 'DESS' in data:
+                        self.disconnect(data)
+                    elif 'DEAD' in data:
+                        self.dead = True
+
                 except socket.timeout:
                     continue
             self.sock.settimeout(None)
@@ -155,6 +169,15 @@ class Meeting_Room:
             print(f'ERA: {err}')
             traceback.print_exc()
             self.end_meeting()
+
+
+    def disconnect(self,data):
+        color = data.split('~')[1]
+        self.disconnected_colors.append(color)
+        if color in self.players:
+            del self.players[color]
+            print(f'{color} disconnected and removed from meeting.')
+
 
     def recive_message(self,data):
         data = data.split('~')
@@ -230,7 +253,8 @@ class Meeting_Room:
             if loc[1] > 500:
                 loc[0] += 400
                 loc[1] = 150
-        self.draw_buttons()
+        if self.player.alive:
+            self.draw_buttons()
         pygame.display.update()
 
     def draw_without_buttons(self):
@@ -248,6 +272,8 @@ class Meeting_Room:
     def draw_rect_player(self,player,loc):
         try:
             rect_player = r'assets\Images\Meeting\rect_player.png'
+            if not player.alive:
+                rect_player = r'assets\Images\Meeting\rect_player_dead.png'
             img = pygame.image.load(rect_player)
             img = pygame.transform.scale(img,(RECT_SIZE[0]*1.5,RECT_SIZE[1]*1.5))
             player_img = pygame.image.load(rf"assets\player_images\{player.color}\{player.color.lower()}_down_walk\step1.png")
@@ -263,9 +289,10 @@ class Meeting_Room:
         img_vote = pygame.image.load(img)
         BUTTON_SIZE = [370,165,img_vote.get_width(),img_vote.get_height()]
         for player in self.players.values():
-            b= Button(self.screen,tuple(BUTTON_SIZE),image=img_vote)
-            self.Buttons[player.color] = b
-            b.draw()
+            if player.alive:
+                b= Button(self.screen,tuple(BUTTON_SIZE),image=img_vote)
+                self.Buttons[player.color] = b
+                b.draw()
             BUTTON_SIZE[1] += RECT_SIZE[1] * 1.5 + 20
             if BUTTON_SIZE[1] > 550:
                 BUTTON_SIZE[1] = 165
@@ -293,4 +320,5 @@ class Meeting_Room:
     def end_meeting(self):
         global all_to_die
         all_to_die = True
-
+        for dis in self.disconnected_colors:
+            send_with_size(self.sock,f'DESS~{dis}')

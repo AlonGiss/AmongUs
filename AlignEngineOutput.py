@@ -31,7 +31,6 @@ class AlignEngineOutput:
         while True:
             events = pygame.event.get()
             if self.exit_button.is_button_pressed(events):
-                self.screen.fill((0, 0, 0))
                 return False
 
             for event in events:
@@ -40,7 +39,6 @@ class AlignEngineOutput:
                     exit()
                 dragging = self.is_liver_moved(event, liver_img_dest, liver_img, dragging, arc_points)
 
-            self.screen.fill((0, 0, 0))
             self.screen.blit(task_img, task_img_dest)
             rotated_move, move_rect = self.rotate_engine(move_img, move_img_dest, liver_img_dest, liver_img,arc_points)
 

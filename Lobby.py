@@ -24,8 +24,7 @@ class Lobby:
         self.players = {self.player.color:self.player}
         self.screen = pygame.display.set_mode(SIZE_MAP)
         self.admin = admin
-        if self.admin:
-            self.start_button = Button(self.screen, (SIZE_MAP[0]//2-30,SIZE_MAP[1]-100,100,70), 'Start')
+        self.start_button = Button(self.screen, (SIZE_MAP[0]//2-30,SIZE_MAP[1]-100,100,70), 'Start')
         self.map = None
         self.mask_map =None
         self.players_lock = threading.Lock()
@@ -99,10 +98,22 @@ class Lobby:
                     self.game_start = True
                 if 'GLOC' in data:
                     send_with_size(self.sock,f'LOCA~{self.player.color}~{self.player.x}~{self.player.y}~{self.player.direction}'.encode())
+                if 'DESS' in data:
+                    self.disconnect(data)
+                if 'ADMN' in data:
+                    self.admin = True
 
         except Exception as err:
             print(f'ERROR1: {err}')
             self.exit()
+
+
+    def disconnect(self,data):
+        color = data.split('~')[1]
+        with self.players_lock:
+            if color in self.players:
+                del self.players[color]
+                print(f'{color} disconnected and removed from lobby.')
 
     def recv_color(self):
         try:

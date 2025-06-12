@@ -19,7 +19,7 @@ class ClearAsteroids:
         task_img_dest = (0, 0)
         asteroid_img_dest = self.set_random_location_asteroid()
         asteroid_count = 3
-
+        target_loc = (500,500)
         while asteroid_count > 0:
             events = pygame.event.get()
             if self.exit_button.is_button_pressed(events):
@@ -32,11 +32,16 @@ class ClearAsteroids:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.destroy_asteroid(event.pos,asteroid_img_dest):
                         asteroid_count -= 1
+                        if asteroid_count <= 0:
+                            break
                         asteroid_img_dest = self.set_random_location_asteroid()
 
             self.screen.blit(task_img,task_img_dest)
             self.screen.blit(asteroid_img, asteroid_img_dest)
-            self.screen.blit(target_img,(pygame.mouse.get_pos()[0] - 35,pygame.mouse.get_pos()[1] - 35))
+
+            if pygame.mouse.get_pos()[0] - 35< 500 or pygame.mouse.get_pos()[1] - 35 > 500:
+                target_loc = pygame.mouse.get_pos()[0] - 35, pygame.mouse.get_pos()[1] - 35
+            self.screen.blit(target_img,target_loc)
             self.exit_button.draw()
             pygame.display.update()
 

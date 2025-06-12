@@ -22,10 +22,11 @@ ZOOM = 4
 START_LOCA = (557,168)
 
 class Game:
-    def __init__(self,sock,id,player):
+    def __init__(self,sock,id,player,num_of_players):
         pygame.init()
         self.id = id
         self.sock = sock
+        self.num_of_players = num_of_players
         self.player = player
         player.set_X_Y(START_LOCA[0],START_LOCA[1])
         self.game = True
@@ -37,6 +38,7 @@ class Game:
         self.emergency_button1 = Button(self.screen,(880, 510, 83, 82),image=pygame.image.load(r'assets/Images/UI/emergency_icon.png'))
         self.report_button = False
         self.map = None
+        self.tasks_per_player = {}
         self.mask_map =None
         self.rol = None
         self.events = []
@@ -51,7 +53,6 @@ class Game:
             print(f'\n--------\nroom: {self.id}\ncolor: {self.player.color}\n------------\n')
         self.load_assets()
         self.draw_map()
-        self.main_game()
 
 
     def waiting_rol(self):
@@ -76,7 +77,7 @@ class Game:
     def emergency_button(self,events):
         x,y = 557,158
         if self.player.distance(self.player.x,self.player.y,x,y) < 50:
-            print('loc: ', self.player.distance(self.player.x, self.player.y, x, y))
+            #print('loc: ', self.player.distance(self.player.x, self.player.y, x, y))
             self.emergency_button1.draw()
             if self.emergency_button1.is_button_pressed(events):
                 return True
@@ -91,7 +92,6 @@ class Game:
             self.waiting_rol()
 
             while self.game:
-
 
                 if not self.stop_metting:
                     self.events = pygame.event.get()
@@ -133,7 +133,9 @@ class Game:
                         self.imposter.show_button()
                         self.kill(self.events)
                         self.draw_task_bar()
-                        self.imposter.try_vent_jump(self.player)
+                        if self.imposter.try_vent_jump(self.player,self.events):
+                            send_loca = f'LOCA~{self.player.color}~{self.player.x}~{self.player.y}~{self.player.direction}~{self.player.alive}'
+                            send_with_size(self.sock, send_loca.encode())
                     else:
                         self.crewmate.total_tasks.show_tasks()
                         self.draw_task_bar()
@@ -142,23 +144,26 @@ class Game:
                             task = self.crewmate.check_near_task()
                             if task:
                                 if self.crewmate.do_task(task):
-                                    send_with_size(self.sock,f'FTSK~{self.id}'.encode())
+                                    send_with_size(self.sock,f'FTSK~{self.id}~{self.player.color}'.encode())
 
                 else:
                     if not self.meeting:
                         self.meeting = Meeting_Room(self.screen, self.sock, self.id, self.player, self.players,admin=self.player.admin)
+                        if self.meeting.dead:
+                            self.dead()
 
                     self.meeting = None
                     self.stop_metting = False
-
+                self.has_won = self.win()
                 pygame.display.flip()
                 pygame.time.Clock().tick(60)
 
-            self.has_won = self.win()
+
             print(f'WIN: {self.has_won}')
             t.join()
-            pygame.quit()
-            return self.player,self.players
+
+            return self.end_game()
+
         except Exception as err:
             print(f'ERROR10: {err}')
             self.exit()
@@ -174,6 +179,35 @@ class Game:
         except Exception as err:
             print('KILL ERR: ' + str(err))
 
+
+    def end_game(self):
+        self.screen.fill((0,0,0))
+        if self.rol == 'CREWMATE':
+            if self.has_won:
+                img = pygame.image.load('assets/Images/Alerts/victoryback.PNG')
+            else:
+                img = pygame.image.load('assets/Images/Alerts/defeat.png')
+        else:
+            if not self.has_won:
+                img = pygame.image.load('assets/Images/Alerts/victoryback.PNG')
+            else:
+                img = pygame.image.load('assets/Images/Alerts/defeat.png')
+        finish = False
+        exit_button =  Button(self.screen,(800, 600, 83, 82),image=pygame.image.load(r'assets/Images/Tasks/close.PNG'))
+        retry_button =  Button(self.screen,(200, 600, 83, 82),'retry')
+        while not finish:
+            self.screen.blit(img,(-200,0))
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return False
+            if retry_button.is_button_pressed(events):
+                return True
+            if exit_button.is_button_pressed(events):
+                return False
+            exit_button.draw()
+            retry_button.draw()
+            pygame.display.update()
 
     def find_closest_player(self):
         closest_player = None
@@ -197,16 +231,19 @@ class Game:
             return closest_player
         return None
 
-    def win(self):
-        alive = 0
-        for color,player in self.players.items():
-            if player.alive and self.player.color != color:
-                alive+= 1
-        if alive == 0:
+    def win(self,data = None):
+
+        if self.has_won:
+            return self.has_won
+        if data == None:
+            if self.num_of_players < 1:
+                self.game = False
+                return self.rol == 'IMPOSTER'
+            #if mesimot
+        else:
+            win = data.split('~')[1]
             self.game = False
-            return self.rol == 'IMPOSTER'
-        elif not self.game:
-            return self.rol != 'IMPOSTER'
+            return win == self.rol
         return None
 
     def load_assets(self):
@@ -221,10 +258,11 @@ class Game:
 
     def recive_data(self):
         try:
+            self.sock.settimeout(0.1)
             while self.game:
                 try:
                     if not self.stop_metting:
-                        print(f'stop: {self.stop_metting}')
+                        #print(f'stop: {self.stop_metting}')
                         data = recv_by_size(self.sock)
                         data = data.decode()
                         if DEBUG:
@@ -238,7 +276,14 @@ class Game:
                         if 'EMRG' in data:
                             self.emergency_meeting()
                         if 'ATSK' in data:
-                            self.add_task()
+                            self.add_task(data)
+                        if 'WINN' in data:
+                            self.has_won = self.win(data)
+                        if 'DESS' in data:
+                            self.disconnect(data)
+                        if 'ADMN' in data:
+                            self.admin = True
+
                 except socket.timeout:
                     continue
 
@@ -246,13 +291,29 @@ class Game:
             print(f'ERROR6: {err}')
             self.exit()
 
-    def add_task(self):
+
+    def disconnect(self,data):
+        color = data.split('~')[1]
+        self.tasks = self.tasks - self.tasks_per_player[color]
+        with self.players_lock:
+            if color in self.players:
+                del self.players[color]
+                print(f'{color} disconnected and removed from game.')
+                self.num_of_players -= 1
+
+    def add_task(self,data):
+        color = data.split('~')[1]
+        if color in self.tasks_per_player:
+            self.tasks_per_player[color] += 1
+        else:
+            self.tasks_per_player[color] = 1
         self.tasks += 1
         total_tasks = (len(self.players.values())-1) * 3
         percentage = self.tasks / total_tasks if total_tasks > 0 else 0
         print(f'percentage: {percentage}')
         if percentage == 1.0:
             self.game = False
+            self.has_won = self.rol == 'CREWMATE'
 
 
     def draw_task_bar(self):
@@ -274,11 +335,16 @@ class Game:
 
 
     def emergency_meeting(self):
+        print(f'Num of players: {self.num_of_players}')
+        for color,player in self.players.items():
+            player.set_X_Y(START_LOCA[0],START_LOCA[1])
+        self.dead_bodies_loc = {}
         self.screen.fill((0,0,0))
         pygame.display.update()
         self.stop_metting = True
 
     def dead(self):
+        self.num_of_players -= 1
         self.player.dead_body()
         send_loca = f'LOCA~{self.player.color}~{self.player.x}~{self.player.y}~{self.player.direction}~{self.player.alive}'
         send_with_size(self.sock, send_loca.encode())
@@ -315,6 +381,7 @@ class Game:
                         if alive == 'False' and self.players[color].alive:
                             self.players[color].dead_body()
                             self.dead_bodies_loc[color] = (x,y)
+                            self.num_of_players -= 1
 
                         if alive == 'True' or not self.player.alive:
                             self.players[color].update_location(x, y,direction)

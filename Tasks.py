@@ -59,6 +59,8 @@ class Tasks:
 
 
     def show_tasks(self):
+        inner_bg_rect = pygame.Rect(20,50, 200, 100)
+        pygame.draw.rect(self.screen, (100, 100, 100,50), inner_bg_rect)
         y = 60
         for task in self.task_array.keys():
             self.show_text(task,30,y,'Black')

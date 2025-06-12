@@ -13,15 +13,17 @@ def main():
     admin = False
     sock = socket.socket()
     sock.connect(('127.0.0.1', 1234))
-    lobby = start_menu(sock)
-    player,players = start_lobby(lobby,sock,admin)
-    if 'CRTE' in lobby:
-        lobby = lobby.split('~')[1]
-    start_game(sock,player,players,lobby)
+    game = True
+    while game:
+        lobby = start_menu(sock)
+        player,players = start_lobby(lobby,sock,admin)
+        if 'CRTE' in lobby:
+            lobby = lobby.split('~')[1]
+        game = start_game(sock,player,players,lobby)
 
 def start_game(sock,player,players,lobby):
-    game = Game(sock,lobby,player)
-
+    game = Game(sock,lobby,player,len(players.keys()))
+    return game.main_game()
 
 def start_lobby(lobby,sock,admin):
     if 'CRTE' in lobby:

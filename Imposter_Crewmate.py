@@ -10,6 +10,7 @@ class Imposter:
     def __init__(self,screen):
         image = pygame.image.load(r'assets\Images\UI\kill_icon.png')
         self.kill_button = Button(screen,(880,600,83,82),'kill',image=image)
+        self.vents_button = Button(screen,(750,510,83,82),'Vents')
         self.vent_points = [
             (665, 180),
             (758, 84),
@@ -39,17 +40,19 @@ class Imposter:
     def near_vent(self, x, y):
         for i, (vx, vy) in enumerate(self.vent_points):
             if ((x - vx) ** 2 + (y - vy) ** 2) ** 0.5 < self.vent_radius:
+                self.vents_button.draw()
                 return i
         return None
 
-    def try_vent_jump(self, player):
-        keys = pygame.key.get_pressed()
+    def try_vent_jump(self, player,events):
         vent_idx = self.near_vent(player.x, player.y)
-        if vent_idx is not None and keys[pygame.K_v]:
+        if vent_idx is not None and self.vents_button.is_button_pressed(events):
             self.current_vent_index = (vent_idx + 1) % len(self.vent_points)
             new_x, new_y = self.vent_points[self.current_vent_index]
             player.set_X_Y(new_x, new_y)
             print(f"jumped: {self.current_vent_index}")
+            return True
+        return False
 
 
 
