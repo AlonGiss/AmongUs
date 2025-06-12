@@ -1,0 +1,40 @@
+
+from Game import Game
+from Button import Button
+from Menu import Menu
+import pygame
+import socket
+from tcp_by_size import recv_by_size,send_with_size
+from Lobby import Lobby
+
+def main():
+    pygame.init()
+    lobby = None
+    admin = False
+    sock = socket.socket()
+    sock.connect(('127.0.0.1', 1234))
+    lobby = start_menu(sock)
+    player,players = start_lobby(lobby,sock,admin)
+    if 'CRTE' in lobby:
+        lobby = lobby.split('~')[1]
+    start_game(sock,player,players,lobby)
+
+def start_game(sock,player,players,lobby):
+    game = Game(sock,lobby,player)
+
+
+def start_lobby(lobby,sock,admin):
+    if 'CRTE' in lobby:
+        send_with_size(sock,lobby.encode())
+        lobby = lobby.split('~')[1]
+        admin = True
+    print(f'lobby: {lobby}')
+    send_with_size(sock,b'ROOM~' + lobby.encode())
+    lobby_room = Lobby(sock,lobby,admin)
+    return lobby_room.main_lobby()
+
+def start_menu(sock):
+    menu = Menu(sock)
+    return menu.start_menu()
+
+main()
