@@ -70,6 +70,8 @@ def protocol_build(sock):
                 mission_completed(data)
             if b'DESS' in data:
                 put_messages_in_room(room, f'DESS~{player_color}'.encode())
+            if b'WINN' in data:
+                send_win(data)
 
         except socket.timeout:
             for mess in asyc_mess.get_async_messages_to_send(sock):
@@ -109,9 +111,18 @@ def protocol_build(sock):
                 finish = True
             except Exception as cleanup_err:
                 print('Cleanup error:', cleanup_err)
+                if len(str(cleanup_err)) == 6:
+                    return
 
         except Exception as err:
             print('PROT_BUILD ERR: ' + str(err) + f'\nroom: {rooms_socks[room]}')
+
+def send_win(data):
+    data = data.decode().split('~')
+    room = data[1]
+    win = data[2]
+    put_messages_in_room(room,f'WINN~{win}'.encode())
+
 
 def get_new_admin(room, color):
     global asyc_mess
@@ -152,6 +163,8 @@ def expulse_player(data):
         send = f'DEAD'
         asyc_mess.put_msg_in_async_msgs(send.encode(), rooms_socks[room][color])
     else:
+        send = f'DEAD'
+        asyc_mess.put_msg_in_async_msgs(send.encode(), rooms_socks[room][color])
         send = f'WINN~CREWMATE'
         put_messages_in_room(room, send.encode())
 

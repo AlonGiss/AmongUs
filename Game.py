@@ -1,15 +1,14 @@
 import socket
 import sys
 import pygame
-from pygame.examples.music_drop_fade import play_file
-
+from Cameras import SecurityCameraSystem
 from Button import Button
 from Imposter_Crewmate import Imposter,Crewmate
 from Player import Player
 from tcp_by_size import send_with_size,recv_by_size
 import threading
 from Meeting_Room import Meeting_Room
-
+from Map import Map
 MAP = "assets/map/map.jpg"
 MAP_MASK = 'assets/map/mask.jpg'
 VISION_RADIUS = 200
@@ -36,6 +35,9 @@ class Game:
         self.dead_bodies_loc = {}
         self.report_button_a = Button(self.screen, (750, 600, 83, 82),image=pygame.image.load(r'assets/Images/UI/report_button.png'))
         self.emergency_button1 = Button(self.screen,(880, 510, 83, 82),image=pygame.image.load(r'assets/Images/UI/emergency_icon.png'))
+        self.map_button = Button(self.screen,(880, 50, 83, 82),'MAP')
+        self.map_icon = Map(self.screen,self.player)
+        self.map_active = False
         self.report_button = False
         self.map = None
         self.tasks_per_player = {}
@@ -52,6 +54,9 @@ class Game:
         if DEBUG:
             print(f'\n--------\nroom: {self.id}\ncolor: {self.player.color}\n------------\n')
         self.load_assets()
+        self.camera = SecurityCameraSystem(self.screen,self.map)
+        self.camera_active = False
+        self.camera_button = Button(self.screen,(100, 600, 83, 82),'Cameras')
         self.draw_map()
 
 
@@ -103,32 +108,40 @@ class Game:
 
 
                     self.draw_map2()
+                    if self.player.distance(self.player.x,self.player.y,302,240) < 30:
+                        self.camera_button.draw()
+                        if self.camera_button.is_button_pressed(self.events):
+                            self.camera_active = True
+                    if self.camera_active:
+                        self.camera.show_camera(self.events)
+                        if keys[pygame.K_ESCAPE]:
+                            self.camera_active = False
+                    else:
+                        if self.emergency_button(self.events):
+                            send_with_size(self.sock,f'EMRG~{self.id}'.encode())
+                            print(f'EMRG~{self.id}')
+                        try:
+                            self.report_body()
+                            if self.report_button:
+                                self.report_button_a.draw()
+                                if self.report_button_a.is_button_pressed(self.events):
+                                    send_with_size(self.sock, f'EMRG~{self.id}'.encode())
+                                    print(f'EMRG~{self.id}')
+                        except Exception as err:
+                            print(f'lalala: {err}')
+                            continue
 
-                    if self.emergency_button(self.events):
-                        send_with_size(self.sock,f'EMRG~{self.id}'.encode())
-                        print(f'EMRG~{self.id}')
-                    try:
-                        self.report_body()
-                        if self.report_button:
-                            self.report_button_a.draw()
-                            if self.report_button_a.is_button_pressed(self.events):
-                                send_with_size(self.sock, f'EMRG~{self.id}'.encode())
-                                print(f'EMRG~{self.id}')
-                    except Exception as err:
-                        print(f'lalala: {err}')
-                        continue
+                        if not self.game:
+                            break
 
-                    if not self.game:
-                        break
+                        if move:
+                            send_loca = f'LOCA~{self.player.color}~{self.player.x}~{self.player.y}~{self.player.direction}~{self.player.alive}'
+                            send_with_size(self.sock,send_loca.encode())
+                            if DEBUG:
+                                print(send_loca)
+                        move = self.player.get_movement(self.mask_map)
 
-                    if move:
-                        send_loca = f'LOCA~{self.player.color}~{self.player.x}~{self.player.y}~{self.player.direction}~{self.player.alive}'
-                        send_with_size(self.sock,send_loca.encode())
-                        if DEBUG:
-                            print(send_loca)
-                    move = self.player.get_movement(self.mask_map)
 
-                    self.draw_players()
                     if self.rol == 'IMPOSTER':
                         self.imposter.show_button()
                         self.kill(self.events)
@@ -146,6 +159,7 @@ class Game:
                                 if self.crewmate.do_task(task):
                                     send_with_size(self.sock,f'FTSK~{self.id}~{self.player.color}'.encode())
 
+                    self.draw_players()
                 else:
                     if not self.meeting:
                         self.meeting = Meeting_Room(self.screen, self.sock, self.id, self.player, self.players,admin=self.player.admin)
@@ -154,6 +168,15 @@ class Game:
 
                     self.meeting = None
                     self.stop_metting = False
+                self.map_button.draw()
+                if self.map_button.is_button_pressed(self.events):
+                    self.map_active = True
+
+                if self.map_active:
+                    self.map_icon.show_map()
+                    if self.map_icon.exit_button.is_button_pressed(self.events):
+                        self.map_active = False
+
                 self.has_won = self.win()
                 pygame.display.flip()
                 pygame.time.Clock().tick(60)
@@ -236,9 +259,8 @@ class Game:
         if self.has_won:
             return self.has_won
         if data == None:
-            if self.num_of_players < 1:
-                self.game = False
-                return self.rol == 'IMPOSTER'
+            if self.num_of_players < 1 and self.rol == 'IMPOSTER' and self.player.alive:
+                send_with_size(self.sock,f'WINN~{self.id}~IMPOSTER'.encode())
             #if mesimot
         else:
             win = data.split('~')[1]
@@ -391,11 +413,20 @@ class Game:
 
     def draw_players(self):
         try:
-            with self.players_lock:
-                for player in self.players.values():
-                    draw_x = int(player.x - self.cam_x) * ZOOM
-                    draw_y = int(player.y - self.cam_y) * ZOOM
-                    if draw_x > 0 and draw_y > 0:
+            if not self.camera_active:
+                with self.players_lock:
+                    for player in self.players.values():
+                        draw_x = int(player.x - self.cam_x) * ZOOM
+                        draw_y = int(player.y - self.cam_y) * ZOOM
+                        if draw_x > 0 and draw_y > 0:
+                            self.screen.blit(player.image, (draw_x, draw_y))
+            else:
+                with self.players_lock:
+                    for player in self.players.values():
+                        if player == self.player:
+                            continue
+                        draw_x = int(player.x -self.camera.camera_zones[self.camera.indx][0]) * ZOOM + 500
+                        draw_y = int(player.y - self.camera.camera_zones[self.camera.indx][1] ) * ZOOM + 350
                         self.screen.blit(player.image, (draw_x, draw_y))
         except Exception as err:
             print(f'ERROR3: {err}')
