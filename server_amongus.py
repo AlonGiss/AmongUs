@@ -12,17 +12,16 @@ DEBUG = True
 COLORS = ['Red', 'Blue', 'Orange', 'Green', 'Yellow']
 ALL_TO_DIE = False
 missions_per_room = {}
-
 def main():
     sock = socket.socket()
     sock.bind(('0.0.0.0', 1234))
     sock.listen(10)
-    print("🚀 Server listening on port 1234")
+    print(" Server listening on port 1234")
 
     while True:
         print('waiting connection...')
         conn, addr = sock.accept()
-        print(f'🔌 Connection from {addr}')
+        print(f' Connection from {addr}')
 
         # Handle login in a thread
         login_thread = threading.Thread(target=handle_login_and_continue, args=(conn,))
@@ -30,6 +29,7 @@ def main():
 
 def handle_login_and_continue(conn):
     try:
+        global srv_login
         srv_login = LoginServer(conn)  # DH + LOGIN
         conn.settimeout(0.01)
 
@@ -39,7 +39,7 @@ def handle_login_and_continue(conn):
         t.start()
 
     except Exception as e:
-        print(f'❌ Login thread failed: {e}')
+        print(f' Login thread failed: {e}')
         conn.close()
 
 def protocol_build(sock):
@@ -51,8 +51,14 @@ def protocol_build(sock):
     while not finish and not ALL_TO_DIE:
         try:
             data = recv_by_size(sock)
-            if DEBUG:
-                print(f'------------\nRECIVED: {data.decode()}\n----------')
+            try:
+                decoded = data.decode()
+                if DEBUG:
+                    print(f'------------\nRECIVED: {decoded}\n----------')
+            except UnicodeDecodeError:
+                print('Received non-decodable data.')
+                continue
+
             if data == b'':
                 finish = True
             elif b'CRTE' in data:
@@ -101,6 +107,7 @@ def protocol_build(sock):
 
 def cleanup_player(room, player_color, sock):
     try:
+        global srv_login
         if room in rooms_socks and player_color in rooms_socks[room]:
             del rooms_socks[room][player_color]
             print(f'{player_color} removed from room {room} due to disconnection.')
@@ -110,6 +117,9 @@ def cleanup_player(room, player_color, sock):
             print(f'Imposter {player_color} removed from room {room}.')
             send = f'WINN~CREWMATE'
             put_messages_in_room(room, send.encode())
+
+        if sock in LoginServer.logged_users:
+            del LoginServer.logged_users[LoginServer.logged_users.get(sock)]
 
         if room in rooms_socks and rooms_socks[room].get('admin') == player_color:
             del rooms_socks[room]['admin']

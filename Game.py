@@ -33,6 +33,8 @@ class Game:
         self.tasks = 0
         self.screen = pygame.display.set_mode(SIZE_MAP)
         self.dead_bodies_loc = {}
+        self.base_shadow = pygame.Surface((SIZE[0], SIZE[1]), pygame.SRCALPHA)
+        self.base_shadow.fill((0, 0, 0, 200))
         self.report_button_a = Button(self.screen, (750, 600, 83, 82),image=pygame.image.load(r'assets/Images/UI/report_button.png'))
         self.emergency_button1 = Button(self.screen,(880, 510, 83, 82),image=pygame.image.load(r'assets/Images/UI/emergency_icon.png'))
         self.map_button = Button(self.screen,(880, 50, 83, 82),'MAP')
@@ -212,8 +214,10 @@ class Game:
                 img = pygame.image.load('assets/Images/Alerts/defeat.png')
         else:
             if not self.has_won:
+                send_with_size(self.sock, f'WINN~{self.id}~CREWMATE'.encode())
                 img = pygame.image.load('assets/Images/Alerts/victoryback.PNG')
             else:
+                send_with_size(self.sock, f'WINN~{self.id}~IMPOSTER'.encode())
                 img = pygame.image.load('assets/Images/Alerts/defeat.png')
         finish = False
         exit_button =  Button(self.screen,(800, 600, 83, 82),image=pygame.image.load(r'assets/Images/Tasks/close.PNG'))
@@ -259,7 +263,7 @@ class Game:
         if self.has_won:
             return self.has_won
         if data == None:
-            if self.num_of_players < 1 and self.rol == 'IMPOSTER' and self.player.alive:
+            if self.num_of_players < 3 and self.rol == 'IMPOSTER' and self.player.alive:
                 send_with_size(self.sock,f'WINN~{self.id}~IMPOSTER'.encode())
             #if mesimot
         else:
@@ -425,8 +429,10 @@ class Game:
                     for player in self.players.values():
                         draw_x = int(player.x - self.cam_x) * ZOOM
                         draw_y = int(player.y - self.cam_y) * ZOOM
-                        if draw_x > 0 and draw_y > 0:
+                        if (draw_x > 0 and draw_y > 0) and (player.distance(draw_x, draw_y, int(self.player.x - self.cam_x) * ZOOM, int(self.player.y - self.cam_y) * ZOOM) < VISION_RADIUS):
                             self.screen.blit(player.image, (draw_x, draw_y))
+                            #self.draw_shadow(self.base_shadow,draw_x,draw_y)
+
             else:
                 with self.players_lock:
                     for player in self.players.values():
@@ -469,7 +475,13 @@ class Game:
         view_scaled = pygame.transform.scale(view, (SIZE_MAP[0], SIZE_MAP[1]))
         self.screen.blit(view_scaled, (0, 0))
 
-
+    def draw_shadow(self, base_shadow, px, py):
+        PLAYER_SIZE = (76 * 0.8, 91 * 0.8)
+        shadow = base_shadow.copy()
+        center_x = px + PLAYER_SIZE[0] // 2
+        center_y = py  + PLAYER_SIZE[1]// 2
+        pygame.draw.circle(shadow, (0, 0, 0, 0), (center_x, center_y), VISION_RADIUS)
+        self.screen.blit(shadow, (0, 0))
 
 
 

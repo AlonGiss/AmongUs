@@ -30,6 +30,7 @@ def main():
         print(f"Unexpected disconnection: {err}")
         error_screen.show_server_disconnection_error()
 
+
 def start_game(sock,player,players,lobby):
     game = Game(sock,lobby,player,len(players.keys()))
     return game.main_game()

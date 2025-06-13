@@ -29,13 +29,21 @@ class Imposter:
         ]
         self.current_vent_index = None
         self.vent_radius = 40
+        self.couldown = 7000
+        self.last_kill = pygame.time.get_ticks()
 
     def kill(self,events):
-        if self.kill_button.is_button_pressed(events):
+        if self.kill_button.is_button_pressed(events) and pygame.time.get_ticks() - self.last_kill > self.couldown:
+            self.last_kill = pygame.time.get_ticks()
             return True
 
     def show_button(self):
-        self.kill_button.draw()
+        if pygame.time.get_ticks() - self.last_kill > self.couldown:
+            self.kill_button.image = pygame.image.load(r'assets\Images\UI\kill_icon.png')
+            self.kill_button.draw()
+        else:
+            self.kill_button.image = pygame.image.load(r'assets\Images\UI\kill_icon_dim.png')
+            self.kill_button.draw()
 
     def near_vent(self, x, y):
         for i, (vx, vy) in enumerate(self.vent_points):
@@ -67,6 +75,7 @@ class Crewmate:
         self.total_tasks = Tasks(self.screen,3)
         self.task_positions = self.total_tasks.tasks_postions
         self.mission = Button(screen, (880, 600, 83, 82), 'Mision')
+
     def check_near_task(self,):
         """
         task_positions: list of (x, y, task_name)

@@ -1,9 +1,10 @@
+import pickle
 import socket
 import threading
 
 import pygame
-import secrets
 
+from cryptography.hazmat.primitives import serialization
 
 FONT = None
 from Input_Box import InputBox
@@ -105,42 +106,31 @@ class Login:
         else:
             return
 
-
     def DP(self):
-        # recive base, prime and public key
-        data = recv_by_size(self.sock)
-        if not data.startswith(b"DPPK~"):
-            if DEBUG:
-                print("❌ Error: expected DPPK~")
-            return
+        from cryptography.hazmat.primitives.asymmetric import dh
+        from cryptography.hazmat.backends import default_backend
 
-        parts = data[5:].split(b"~")
-        if len(parts) != 3:
-            if DEBUG:
-                print("❌ Error: malformed DPPK~ message")
-            return
+        data = pickle.loads(recv_by_size(self.sock))
+        p = data['p']
+        g = data['g']
+        server_pub_bytes = data['pub']
 
-        base = int(parts[0].decode())
-        prime = int(parts[1].decode())
-        server_pub = int(parts[2].decode())
+        params_numbers = dh.DHParameterNumbers(p, g)
+        parameters = params_numbers.parameters(default_backend())
+
+        self.priv_client = parameters.generate_private_key()
+        self.pub_client = self.priv_client.public_key()
+
+        client_pub_bytes = self.pub_client.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+        send_with_size(self.sock, client_pub_bytes)
+
+        server_pub_key = serialization.load_pem_public_key(server_pub_bytes, backend=default_backend())
+
+        shared_key = self.priv_client.exchange(server_pub_key)
+        self.shared_key = derive_AES_key(shared_key)
         if DEBUG:
-            print(f"📥 base={base}, prime={prime}")
-            print(f"🔐 Server Public Key (int): {server_pub}")
-
-        self.priv_client = secrets.randbits(128)
-        self.pub_client = pow(base, self.priv_client, prime)
-        if DEBUG:
-
-            print(f"🔐 Client Public Key (int): {self.pub_client}")
-
-        send_with_size(self.sock, b'DPPK~' + str(self.pub_client).encode())
-
-        shared_secret = pow(server_pub, self.priv_client, prime)
-        byte_len = (prime.bit_length() + 7) // 8
-        shared_bytes = shared_secret.to_bytes(byte_len, 'big')
-
-        self.shared_key = derive_AES_key(shared_bytes)
-        if DEBUG:
-            print(f"🔑 Shared AES Key (hex): {self.shared_key.hex()}")
-
+            print(f'Shared Key: {shared_key.hex()}')
 
