@@ -11,32 +11,30 @@ LEN_TO_PRINT = 100
 
 def recv_by_size(sock):
     size_header = b''
-    data_len = 0
     while len(size_header) < size_header_size:
         _s = sock.recv(size_header_size - len(size_header))
         if _s == b'':
-            size_header = b''
-            break
+            return b''
         size_header += _s
-    data  = b''
-    if size_header != b'':
-        data_len = int(size_header[:size_header_size - 1])
-        while len(data) < data_len:
-            _d = sock.recv(data_len - len(data))
-            if _d == b'':
-                data  = b''
-                break
-            data += _d
 
-    if  TCP_DEBUG and size_header != b'':
-        print ("\nRecv(%s)>>>" % (size_header,), end='')
-        print ("%s"%(data[:min(len(data),LEN_TO_PRINT)],))
-    if data_len != len(data):
-        data=b'' # Partial data is like no data !
-    data = data.split(b'|')
-    if len(data)>1:
-        return data[1]
-    return data[0]
+    try:
+        data_len = int(size_header[:size_header_size - 1])
+    except ValueError:
+        print("❌ Invalid size header received:", size_header)
+        return b''
+
+    data = b''
+    while len(data) < data_len:
+        _d = sock.recv(data_len - len(data))
+        if _d == b'':
+            return b''
+        data += _d
+
+    if TCP_DEBUG:
+        print(f"\nRecv({size_header})>>>", end='')
+        print(data[:min(len(data), LEN_TO_PRINT)])
+    return data  # ✅ return full raw data, no .split()
+
 
 
 

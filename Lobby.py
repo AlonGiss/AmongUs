@@ -30,6 +30,7 @@ class Lobby:
         self.players_lock = threading.Lock()
         self.load_assets()
         self.draw_map()
+        self.error = True
 
 
 
@@ -39,7 +40,7 @@ class Lobby:
             t = threading.Thread(target=self.recive_data)
             t.start()
             move = True
-            while not self.game_start:
+            while not self.game_start or self.error:
                 events = pygame.event.get()
 
                 for event in events:
@@ -61,9 +62,13 @@ class Lobby:
                 pygame.display.flip()
                 pygame.time.Clock().tick(60)
 
+            if not self.error:
+                self.exit()
+
             t.join()
             pygame.quit()
             return self.player,self.players
+
         except Exception as err:
             print(f'ERROR0: {err}')
             self.exit()
@@ -85,9 +90,12 @@ class Lobby:
             while not self.game_start:
                 data = recv_by_size(self.sock)
                 if data == b'':
-                    self.exit()
+                    from error_screen import show_server_disconnection_error
+                    show_server_disconnection_error()
 
                 data = data.decode()
+
+
                 if DEBUG:
                     print(f'RECIVED: {data}')
                 if 'COLO' in data:
@@ -159,10 +167,12 @@ class Lobby:
 
     def exit(self):
         global t
-        if t:
+        if t and threading.current_thread() != t:
             t.join()
-        pygame.quit()
-        sys.exit(0)
+            from error_screen import show_server_disconnection_error
+            show_server_disconnection_error()
+        self.error = False
+
 
 
     def draw_map(self):

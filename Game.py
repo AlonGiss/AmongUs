@@ -286,9 +286,15 @@ class Game:
                     if not self.stop_metting:
                         #print(f'stop: {self.stop_metting}')
                         data = recv_by_size(self.sock)
+
+                        if data == b'':
+                            from error_screen import show_server_disconnection_error
+                            show_server_disconnection_error()
+
                         data = data.decode()
                         if DEBUG:
                             print('RECV: ' + data)
+
                         if 'RROL' in data:
                             self.get_rol(data)
                         elif 'LOCA' in data:
@@ -316,7 +322,8 @@ class Game:
 
     def disconnect(self,data):
         color = data.split('~')[1]
-        self.tasks = self.tasks - self.tasks_per_player[color]
+        if color in self.tasks_per_player:
+            self.tasks = self.tasks - self.tasks_per_player[color]
         with self.players_lock:
             if color in self.players:
                 del self.players[color]
@@ -432,13 +439,12 @@ class Game:
             print(f'ERROR3: {err}')
             self.exit()
 
-
     def exit(self):
         global t
         if t and threading.current_thread() != t:
             t.join()
-        pygame.quit()
-        sys.exit(0)
+        from error_screen import show_server_disconnection_error
+        show_server_disconnection_error()
 
 
     def draw_map(self):

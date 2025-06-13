@@ -3,6 +3,7 @@ import socket
 import threading
 from AsyncMessages import AsyncMessages
 from tcp_by_size import send_with_size, recv_by_size
+from ServerHandleLogIn import LoginServer
 
 asyc_mess = AsyncMessages()
 THREADS = []
@@ -15,19 +16,31 @@ missions_per_room = {}
 def main():
     sock = socket.socket()
     sock.bind(('0.0.0.0', 1234))
-    sock.listen(3)
-    finish = True
+    sock.listen(10)
+    print("🚀 Server listening on port 1234")
 
-    while finish:
+    while True:
         print('waiting connection...')
         conn, addr = sock.accept()
+        print(f'🔌 Connection from {addr}')
+
+        # Handle login in a thread
+        login_thread = threading.Thread(target=handle_login_and_continue, args=(conn,))
+        login_thread.start()
+
+def handle_login_and_continue(conn):
+    try:
+        srv_login = LoginServer(conn)  # DH + LOGIN
         conn.settimeout(0.01)
 
-        print('connect from:', addr)
-
+        # Once login is done, enter protocol
         t = threading.Thread(target=protocol_build, args=(conn,))
         THREADS.append(t)
         t.start()
+
+    except Exception as e:
+        print(f'❌ Login thread failed: {e}')
+        conn.close()
 
 def protocol_build(sock):
     global asyc_mess, ALL_TO_DIE
@@ -35,7 +48,6 @@ def protocol_build(sock):
     finish = False
     room = ''
     player_color = ''
-
     while not finish and not ALL_TO_DIE:
         try:
             data = recv_by_size(sock)
@@ -69,7 +81,7 @@ def protocol_build(sock):
             if b'FTSK' in data:
                 mission_completed(data)
             if b'DESS' in data:
-                put_messages_in_room(room, f'DESS~{player_color}'.encode())
+                put_messages_in_room(room, f'DESS~{data.decode().split('~')[1]}'.encode())
             if b'WINN' in data:
                 send_win(data)
 
@@ -81,41 +93,42 @@ def protocol_build(sock):
 
         except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError, OSError) as disconnect_err:
             print(f'Disconnected: {disconnect_err}')
-
-            try:
-                if room in rooms_socks and player_color in rooms_socks[room]:
-                    del rooms_socks[room][player_color]
-                    print(f'{player_color} removed from room {room} due to disconnection.')
-
-                if room in rooms_socks and rooms_socks[room].get('Imposter') == player_color:
-                    del rooms_socks[room]['Imposter']
-                    print(f'Imposter {player_color} removed from room {room}.')
-                    send = f'WINN~CREWMATE'
-                    put_messages_in_room(room, send.encode())
-
-                if room in rooms_socks and rooms_socks[room].get('admin') == player_color:
-                    del rooms_socks[room]['admin']
-                    print(f'admin {player_color} removed from room {room}.')
-                    available_colors = [c for c in rooms_socks[room] if c not in ('Imposter', 'admin')]
-                    if available_colors:
-                        new_admin_color = random.choice(available_colors)
-                        rooms_socks[room]['admin'] = new_admin_color
-                        get_new_admin(room, new_admin_color)
-
-                if room in rooms_socks and len(rooms_socks[room]) == 0:
-                    del rooms_socks[room]
-                    print(f'Room {room} deleted because it is empty.')
-
-                sock.close()
-                put_messages_in_room(room, f'DESS~{player_color}'.encode())
-                finish = True
-            except Exception as cleanup_err:
-                print('Cleanup error:', cleanup_err)
-                if len(str(cleanup_err)) == 6:
-                    return
+            cleanup_player(room, player_color, sock)
+            finish = True
 
         except Exception as err:
-            print('PROT_BUILD ERR: ' + str(err) + f'\nroom: {rooms_socks[room]}')
+            print('PROT_BUILD ERR: ' + str(err) + f'\nroom: {rooms_socks.get(room, {})}')
+
+def cleanup_player(room, player_color, sock):
+    try:
+        if room in rooms_socks and player_color in rooms_socks[room]:
+            del rooms_socks[room][player_color]
+            print(f'{player_color} removed from room {room} due to disconnection.')
+
+        if room in rooms_socks and rooms_socks[room].get('Imposter') == player_color:
+            del rooms_socks[room]['Imposter']
+            print(f'Imposter {player_color} removed from room {room}.')
+            send = f'WINN~CREWMATE'
+            put_messages_in_room(room, send.encode())
+
+        if room in rooms_socks and rooms_socks[room].get('admin') == player_color:
+            del rooms_socks[room]['admin']
+            print(f'admin {player_color} removed from room {room}.')
+            available_colors = [c for c in rooms_socks[room] if c not in ('Imposter', 'admin')]
+            if available_colors:
+                new_admin_color = random.choice(available_colors)
+                rooms_socks[room]['admin'] = new_admin_color
+                get_new_admin(room, new_admin_color)
+
+        if room in rooms_socks and len(rooms_socks[room]) == 0:
+            del rooms_socks[room]
+            print(f'Room {room} deleted because it is empty.')
+
+        sock.close()
+        put_messages_in_room(room, f'DESS~{player_color}'.encode())
+
+    except Exception as cleanup_err:
+        print('Cleanup error:', cleanup_err)
 
 def send_win(data):
     data = data.decode().split('~')

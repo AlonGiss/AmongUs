@@ -125,12 +125,12 @@ class Meeting_Room:
         except pygame.error as err:
             print(f'ERRar: {err}')
             self.end_meeting()
-            exit()
+            self.exit()
 
         except Exception as err:
             print(f'ERRar: {err}')
             self.end_meeting()
-            exit()
+            self.exit()
 
     def are_alive(self):
         cnt = 0
@@ -150,7 +150,12 @@ class Meeting_Room:
             while not all_to_die:
                 try:
                     print('hello')
-                    data = recv_by_size(self.sock).decode()
+                    data = recv_by_size(self.sock)
+                    if data == b'':
+                        from error_screen import show_server_disconnection_error
+                        show_server_disconnection_error()
+                    data = data.decode()
+
                     if DEBUG:
                         print(f'DA RE: {data}')
                     if 'NVTE' in data:
@@ -177,6 +182,7 @@ class Meeting_Room:
         if color in self.players:
             del self.players[color]
             print(f'{color} disconnected and removed from meeting.')
+        self.draw()
 
 
     def recive_message(self,data):
@@ -200,7 +206,7 @@ class Meeting_Room:
         for event in events:
             if event.type == pygame.QUIT:
                 self.end_meeting()
-                exit()
+                self.exit()
 
             self.input_chat.handle_event(event,25)
 
@@ -227,7 +233,12 @@ class Meeting_Room:
         self.draw_rect_player(self.players[color],loca)
         self.show_text(message,loca[0]+75,loca[1]+25,color='Black')
 
-
+    def exit(self):
+        global t
+        if t and threading.current_thread() != t:
+            t.join()
+        from error_screen import show_server_disconnection_error
+        show_server_disconnection_error()
 
     def draw_chat(self):
         chat_img = pygame.image.load(r'assets/Images/Meeting/chat_img.png').convert_alpha()
