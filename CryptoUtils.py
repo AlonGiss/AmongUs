@@ -30,7 +30,7 @@ def send_with_AES(sock, plaintext, key):
 def recv_with_AES(sock, key):
     data = recv_by_size(sock)
     if not data or len(data) < 16:
-        print(f"❌ recv_with_AES: Data too short ({len(data) if data else 0} bytes)")
+        print(f"recv_with_AES: Data too short ({len(data) if data else 0} bytes)")
         return ''
     try:
         iv, ciphertext = data[:16], data[16:]

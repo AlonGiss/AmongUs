@@ -1,9 +1,9 @@
 import pygame
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 
 class Button:
-    def __init__(self, screen, size, text='', color_back='BLACK', color_for='WHITE', image=None):
+    def __init__(self, screen, size, text='', color_back='BLACK', color_for='WHITE', image=None,font_size=25):
         pygame.init()
         self.screen = screen
         self.dist = (size[0],size[1])
@@ -11,7 +11,7 @@ class Button:
         self.color_back = color_back
         self.color_for = color_for
         self.text = text
-        self.font = pygame.font.SysFont(FONT, 36)
+        self.font = pygame.font.Font(FONT, font_size)
 
         # Optional image
         self.image = image  # Should be a loaded pygame.Surface, not a path string

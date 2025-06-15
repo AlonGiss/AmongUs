@@ -5,7 +5,7 @@ import pygame
 
 from Button import Button
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 IMG_ADRS = r'assets\Images\Tasks\FixWiring'
 TASK_SIZE = (500,500)
 
@@ -102,6 +102,6 @@ class FixWiring:
 
 
     def show_text(self, text, x, y, color='WHITE', size=25):
-        font = pygame.font.SysFont(None, size)
+        font = pygame.font.Font(None, size)
         super_texto = font.render(text, True, color)
         self.screen.blit(super_texto, (x, y))

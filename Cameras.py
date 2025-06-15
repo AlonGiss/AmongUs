@@ -2,6 +2,7 @@ import pygame
 from Button import  Button
 ZOOM = 4
 SIZE_MAP = (1000,700)
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 
 class SecurityCameraSystem:
     def __init__(self, screen, map_surface):
@@ -10,9 +11,9 @@ class SecurityCameraSystem:
         self.camera_zones = [(563,375),(206,282),(443,111),(854,273)]
         self.active_camera = None
         self.in_camera_mode = False
-        self.font = pygame.font.SysFont(None, 24)
+        self.font = pygame.font.Font(FONT, 24)
         self.indx= 0
-        self.change = Button(self.screen,(700,500,100,100),'Change')
+        self.change = Button(self.screen,(700,500,100,100),image=pygame.image.load('assets/Images/UI/proceed_button.png'))
 
     def show_camera(self,events = None):
         zoom = ZOOM

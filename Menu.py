@@ -7,7 +7,7 @@ from Button import Button
 import random
 from tcp_by_size import recv_by_size,send_with_size
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 SIZE = (900,900)
 BUTTON_SIZE = (SIZE[0]//4,SIZE[1]//11)
 DEFAULT_WIDTH = SIZE[0] // 2 - BUTTON_SIZE[0]//2
@@ -28,8 +28,8 @@ class Menu:
             print('CRTE~' + room)
             return 'CRTE~' + room
         if self.exit_button.is_button_pressed(events):
-                pygame.quit()
-                sys.exit(0)
+                self.exit()
+                exit()
         return None
 
     def join_lobby(self):
@@ -48,7 +48,7 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
+                    self.exit()
                 input_box.handle_event(event)
 
                 if event.type == pygame.KEYDOWN and input_box.active:
@@ -77,6 +77,19 @@ class Menu:
 
         return input_box.get_text()
 
+    def exit(self):
+        global t
+        try:
+            send_with_size(self.sock,b'DISS')
+            print('diss')
+        except:
+            pass
+        try:
+            self.sock.close()
+        except:
+            pass
+
+
     def draw_rooms(self,rooms):
         x = 100
         y = 200
@@ -86,17 +99,17 @@ class Menu:
 
     def show_title(self):
 
-        font = pygame.font.SysFont(FONT, 100)
+        font = pygame.font.Font(FONT, 100)
         super_texto = font.render('AMONG', True, 'BLUE')
         self.screen.blit(super_texto, (SIZE[0]//3-50, 100))
 
-        font = pygame.font.SysFont(FONT, 100)
+        font = pygame.font.Font(FONT, 100)
         super_texto = font.render('US', True, 'BLUE')
         self.screen.blit(super_texto, (SIZE[0]//3+200, 200))
 
     def show_error(self,err):
 
-        font = pygame.font.SysFont(FONT, 25)
+        font = pygame.font.Font(FONT, 25)
         super_text = font.render(err, True, 'RED')
         self.screen.blit(super_text, (SIZE[0]//3-25, 160))
 
@@ -144,7 +157,7 @@ class Menu:
         return rooms
 
     def show_text(self, text, x, y, size=25,color='WHITE', with_box=False):
-        font = pygame.font.SysFont(FONT, size,bold=True)
+        font = pygame.font.Font(FONT, size,bold=True)
         super_texto = font.render(text, True, color)
 
         if with_box:

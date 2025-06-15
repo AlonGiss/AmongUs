@@ -1,6 +1,7 @@
 import socket
 import sys
 import pygame
+
 from Cameras import SecurityCameraSystem
 from Button import Button
 from Imposter_Crewmate import Imposter,Crewmate
@@ -13,7 +14,7 @@ MAP = "assets/map/map.jpg"
 MAP_MASK = 'assets/map/mask.jpg'
 VISION_RADIUS = 200
 DEBUG = True
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 SIZE = (3000,1500)
 SIZE_MAP = (1000,700)
 t = None
@@ -37,7 +38,7 @@ class Game:
         self.base_shadow.fill((0, 0, 0, 200))
         self.report_button_a = Button(self.screen, (750, 600, 83, 82),image=pygame.image.load(r'assets/Images/UI/report_button.png'))
         self.emergency_button1 = Button(self.screen,(880, 510, 83, 82),image=pygame.image.load(r'assets/Images/UI/emergency_icon.png'))
-        self.map_button = Button(self.screen,(880, 50, 83, 82),'MAP')
+        self.map_button = Button(self.screen,(880, 50, 83, 82),image=pygame.image.load('assets/Images/UI/map_button.png'))
         self.map_icon = Map(self.screen,self.player)
         self.map_active = False
         self.report_button = False
@@ -58,7 +59,7 @@ class Game:
         self.load_assets()
         self.camera = SecurityCameraSystem(self.screen,self.map)
         self.camera_active = False
-        self.camera_button = Button(self.screen,(100, 600, 83, 82),'Cameras')
+        self.camera_button = Button(self.screen,(100, 600, 83, 82),image=pygame.image.load('assets/Images/UI/cameras_button.png'))
         self.draw_map()
 
 
@@ -107,6 +108,7 @@ class Game:
                     for event in self.events:
                         if event.type == pygame.QUIT:
                             self.exit()
+                            exit()
 
 
                     self.draw_map2()
@@ -431,7 +433,8 @@ class Game:
                         draw_y = int(player.y - self.cam_y) * ZOOM
                         if (draw_x > 0 and draw_y > 0) and (player.distance(draw_x, draw_y, int(self.player.x - self.cam_x) * ZOOM, int(self.player.y - self.cam_y) * ZOOM) < VISION_RADIUS):
                             self.screen.blit(player.image, (draw_x, draw_y))
-                            #self.draw_shadow(self.base_shadow,draw_x,draw_y)
+                        if player == self.player:
+                            self.draw_shadow(self.base_shadow,draw_x,draw_y)
 
             else:
                 with self.players_lock:
@@ -447,6 +450,15 @@ class Game:
 
     def exit(self):
         global t
+        self.game = False
+        try:
+            send_with_size(self.sock,b'DISS')
+        except:
+            pass
+        try:
+            self.sock.close()
+        except:
+            pass
         if t and threading.current_thread() != t:
             t.join()
         from error_screen import show_server_disconnection_error
@@ -461,7 +473,7 @@ class Game:
             self.exit()
 
     def show_text(self,text,x,y,color='WHITE'):
-        font = pygame.font.SysFont(FONT, 25)
+        font = pygame.font.Font(FONT, 25)
         super_texto = font.render(text, True, color)
         self.screen.blit(super_texto, (x,y))
 

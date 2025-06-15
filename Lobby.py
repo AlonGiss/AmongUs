@@ -10,7 +10,7 @@ MAP = "assets/Lobby.jpg"
 MAP_MASK = 'assets/Lobby_Mask.jpg'
 VISION_RADIUS = 200
 DEBUG = False
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 SIZE_MAP = (547*1.5,578*1.5)
 t = None
 class Lobby:
@@ -24,7 +24,7 @@ class Lobby:
         self.players = {self.player.color:self.player}
         self.screen = pygame.display.set_mode(SIZE_MAP)
         self.admin = admin
-        self.start_button = Button(self.screen, (SIZE_MAP[0]//2-30,SIZE_MAP[1]-100,100,70), 'Start')
+        self.start_button = Button(self.screen, (SIZE_MAP[0]//2-30,SIZE_MAP[1]-100,100,70), image=pygame.image.load('assets/Images/UI/start_button.png'))
         self.map = None
         self.mask_map =None
         self.players_lock = threading.Lock()
@@ -46,6 +46,7 @@ class Lobby:
                 for event in events:
                     if event.type == pygame.QUIT:
                         self.exit()
+                        exit()
 
                 self.draw_map()
                 self.start_game(events)
@@ -167,6 +168,15 @@ class Lobby:
 
     def exit(self):
         global t
+        self.game_start = True
+        try:
+            send_with_size(self.sock,b'DISS')
+        except:
+            pass
+        try:
+            self.sock.close()
+        except:
+            pass
         if t and threading.current_thread() != t:
             t.join()
             from error_screen import show_server_disconnection_error
@@ -187,7 +197,7 @@ class Lobby:
             self.exit()
 
     def show_text(self,text,x,y,color='WHITE'):
-        font = pygame.font.SysFont(FONT, 25)
+        font = pygame.font.Font(FONT, 25)
         super_texto = font.render(text, True, color)
         self.screen.blit(super_texto, (x,y))
 

@@ -18,10 +18,11 @@ class Login:
         self.sock = sock
         self.screen = pygame.display.set_mode((1000, 700))
         self.input_name = InputBox(350, 70, 100, 40, text='UserName')
-        self.input_pass = InputBox(350, 130, 100, 40, text='Password')
-        self.button_login = Button(self.screen, (450, 200, 100, 50), 'LogIn')
-        self.button_signin = Button(self.screen, (450, 260, 100, 50), 'SignIn')
-
+        self.input_pass = InputBox(350, 130, 100, 40, text='PASSWORD',font='PASSWORD',)
+        self.button_login = Button(self.screen, (450, 200, 100, 50), 'LogIn',color_back=(50,50,255,10))
+        self.button_signin = Button(self.screen, (450, 260, 100, 50), 'SignIn',color_back=(50,50,255,10))
+        self.show_pass = Button(self.screen, (700, 130, 130, 50), 'Show Password',font_size=26,color_back=(50,50,255,10))
+        self.background = pygame.transform.scale(pygame.image.load('assets/Images/UI/AmongUs_background.jpg'),(1000,700))
         self.finish = True
         self.username = ''
         self.password = ''
@@ -43,17 +44,18 @@ class Login:
     def show_login(self):
         self.waiting_room()
         self.t.join()
-        self.screen.fill((255, 255, 0))
+        self.screen.blit(self.background,(0,0))
         self.input_name.draw(self.screen)
         self.input_pass.draw(self.screen)
         self.button_login.draw()
         self.button_signin.draw()
+        self.show_pass.draw()
         if self.error:
             self.show_text(self.error,375,180,'RED')
         pygame.display.update()
 
     def show_text(self,text,x,y,color='WHITE'):
-        font = pygame.font.SysFont(FONT, 25)
+        font = pygame.font.Font(FONT, 25)
         super_texto = font.render(text, True, color)
         self.screen.blit(super_texto, (x,y))
 
@@ -61,6 +63,9 @@ class Login:
         while self.finish:
             events = pygame.event.get()
             for event in events:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
                 self.input_name.handle_event(event, max_char=10)
                 self.input_pass.handle_event(event, max_char=10)
             self.username = self.input_name.get_text()
@@ -84,6 +89,9 @@ class Login:
                         print(f'name: {self.username}\npassword: {self.password}')
                     send_with_AES(self.sock,f'LGIN~{self.username}~{self.password}',self.shared_key)
                     self.recive_data()
+
+            if self.show_pass.is_button_pressed(events):
+                self.input_pass.password = not self.input_pass.password
 
         self.screen.fill((0,0,0))
         self.show_text('Log In Succesfull',400,340,'Green')

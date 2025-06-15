@@ -10,7 +10,7 @@ class Imposter:
     def __init__(self,screen):
         image = pygame.image.load(r'assets\Images\UI\kill_icon.png')
         self.kill_button = Button(screen,(880,600,83,82),'kill',image=image)
-        self.vents_button = Button(screen,(750,510,83,82),'Vents')
+        self.vents_button = Button(screen,(750,510,83,82),image=pygame.image.load('assets/Images/UI/vents_button.png'))
         self.vent_points = [
             (665, 180),
             (758, 84),
@@ -74,7 +74,7 @@ class Crewmate:
         self.tasks_completed = []
         self.total_tasks = Tasks(self.screen,3)
         self.task_positions = self.total_tasks.tasks_postions
-        self.mission = Button(screen, (880, 600, 83, 82), 'Mision')
+        self.mission = Button(screen, (880, 600, 83, 82), image=pygame.image.load('assets/Images/UI/use_task.png'))
 
     def check_near_task(self,):
         """

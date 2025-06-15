@@ -88,6 +88,8 @@ def protocol_build(sock):
                 mission_completed(data)
             if b'DESS' in data:
                 put_messages_in_room(room, f'DESS~{data.decode().split('~')[1]}'.encode())
+            if b'DISS' in data:
+                cleanup_player(room,player_color,sock)
             if b'WINN' in data:
                 send_win(data)
 
@@ -118,8 +120,17 @@ def cleanup_player(room, player_color, sock):
             send = f'WINN~CREWMATE'
             put_messages_in_room(room, send.encode())
 
-        if sock in LoginServer.logged_users:
-            del LoginServer.logged_users[LoginServer.logged_users.get(sock)]
+        if sock in LoginServer.logged_users.values():
+            print('deliting')
+            user_to_delete = None
+            for username, user_sock in LoginServer.logged_users.items():
+                if user_sock == sock:
+                    user_to_delete = username
+                    break
+            if user_to_delete:
+                del LoginServer.logged_users[user_to_delete]
+                print(f"Deleted logged user: {user_to_delete}")
+            print(LoginServer.logged_users)
 
         if room in rooms_socks and rooms_socks[room].get('admin') == player_color:
             del rooms_socks[room]['admin']

@@ -2,7 +2,7 @@ import math,pygame
 import time
 from Button import  Button
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 IMG_ADRS = r'assets\Images\Tasks\AlignEngineOutput'
 TASK_SIZE = (500,500)
 

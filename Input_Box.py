@@ -1,10 +1,14 @@
 import pygame
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 
 class InputBox:
     def __init__(self, x, y, w, h, font=FONT, text=''):
         pygame.font.init()
+        self.password = False
+        if font and font == 'PASSWORD':
+            font = FONT
+            self.password = True
         self.rect = pygame.Rect(x, y, w, h)
         self.color_inactive = pygame.Color('gray')
         self.color_active = pygame.Color('dodgerblue2')
@@ -29,12 +33,21 @@ class InputBox:
                 self.text = self.text[:-1]
             elif event.unicode.isprintable() and len(self.text) < max_char:
                 self.text += event.unicode
-            self.txt_surface = self.font.render(self.text, True, pygame.Color('blue'))
+            if self.password:
+                self.txt_surface = self.font.render((len(self.text)*'*'), True, pygame.Color('blue'))
+            else:
+                self.txt_surface = self.font.render(self.text, True, pygame.Color('blue'))
 
     def draw(self, screen):
+
+        if self.password:
+            self.txt_surface = self.font.render((len(self.text) * '*'), True, pygame.Color('blue'))
+        else:
+            self.txt_surface = self.font.render(self.text, True, pygame.Color('blue'))
+
         # Resize box if needed
         self.rect.w = max(300, self.txt_surface.get_width() + 10)
-        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 10))
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
     def get_text(self):

@@ -2,7 +2,6 @@ import socket
 import threading
 import traceback
 
-from sympy.codegen.ast import continue_
 
 from tcp_by_size import recv_by_size,send_with_size
 
@@ -10,7 +9,7 @@ from Input_Box import InputBox
 from Button import Button
 import pygame
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 t = None
 all_to_die = False
 SIZE_MAP = (650,441)
@@ -28,6 +27,7 @@ class Meeting_Room:
         self.player = player
         self.players = players
         self.chat_Button = Button(self.screen,(750,90,50,48),image=pygame.transform.scale(pygame.image.load(r'assets/Images/Meeting/message_icon.png'),(50,48)))
+        self.bye_background = pygame.transform.scale(pygame.image.load('assets/Images/UI/AmongUs_background.jpg'),(1000,700))
         self.Buttons = {}
         self.voted = None
         self.messages = {}
@@ -81,6 +81,8 @@ class Meeting_Room:
                     if event.type == pygame.QUIT:
                         print('EXIT')
                         self.end_meeting()
+                        self.exit()
+                        exit()
 
                 if self.chat_open:
                     self.chat(events)
@@ -140,7 +142,7 @@ class Meeting_Room:
         return cnt
 
     def voted_anim(self,color):
-        self.screen.fill((0,0,0))
+        self.screen.blit(self.bye_background,(0,0))
         self.show_text(f'{color} Has Been Eliminated',SIZE[0]//2-70,SIZE[1]//2-20,color)
         pygame.display.update()
 
@@ -234,7 +236,16 @@ class Meeting_Room:
         self.show_text(message,loca[0]+75,loca[1]+25,color='Black')
 
     def exit(self):
-        global t
+        global t,all_to_die
+        all_to_die = True
+        try:
+            send_with_size(self.sock,b'DISS')
+        except:
+            pass
+        try:
+            self.sock.close()
+        except:
+            pass
         if t and threading.current_thread() != t:
             t.join()
         from error_screen import show_server_disconnection_error
@@ -310,7 +321,7 @@ class Meeting_Room:
                 BUTTON_SIZE[0] += 370
 
     def show_text(self,text,x,y,color='WHITE'):
-        font = pygame.font.SysFont(FONT, 25)
+        font = pygame.font.Font(FONT, 25)
         super_texto = font.render(text, True, color)
         self.screen.blit(super_texto, (x,y))
 

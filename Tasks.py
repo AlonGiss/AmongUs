@@ -6,7 +6,7 @@ from ClearAsteroids import ClearAsteroids
 from AlignEngineOutput import AlignEngineOutput
 from FixWiring import FixWiring
 
-FONT = None
+FONT = r'assets\Fonts\AmongUsFont.ttf'
 IMG_ADRS = r'assets\Images\Tasks'
 TASK_SIZE = (500,500)
 TASKS = [

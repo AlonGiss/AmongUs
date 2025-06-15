@@ -1,10 +1,13 @@
 # === server.py ===
+import base64
+import hashlib
 import socket
 import os
 
 from cryptography.hazmat.primitives.asymmetric import dh
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
+
 from tcp_by_size import send_with_size, recv_by_size
 from CryptoUtils import derive_AES_key, recv_with_AES, send_with_AES
 import pickle
@@ -38,7 +41,8 @@ class LoginServer:
             data = recv_with_AES(self.sock, self.shared_key)
             if DEBUG:
                 print(f"Received: {data}")
-
+            if data == '':
+                return
             if data.startswith('LGIN~'):
                 self.handle_login(data)
             elif data.startswith('SIGN~'):
@@ -58,9 +62,17 @@ class LoginServer:
     def handle_login(self, data):
         code, user, password = data.split('~')
         if user in self.users:
-            if self.users[user] == password:
-                if user in LoginServer.logged_users.keys():
-                    send = 'ERRR~User has already connected'
+            if self.verify_password(self.users[user], password):
+                if user in LoginServer.logged_users:
+                    old_sock = LoginServer.logged_users[user]
+                    if getattr(old_sock, '_closed', True):  # fallback-safe
+                        print(f"Stale socket for '{user}', removing.")
+                        del LoginServer.logged_users[user]
+                        LoginServer.logged_users[user] = self.sock
+                        send = 'LOGS'
+                        self.finish = False
+                    else:
+                        send = 'ERRR~User has already connected'
                 else:
                     LoginServer.logged_users[user] = self.sock
                     send = 'LOGS'
@@ -69,14 +81,28 @@ class LoginServer:
                 send = 'ERRR~User or Password Not Found'
         else:
             send = 'ERRR~User or Password Not Found'
-        send_with_AES(self.sock,send,self.shared_key)
+        send_with_AES(self.sock, send, self.shared_key)
+
+    def hash_password(self,password: str, salt: bytes = None) -> str:
+        if not salt:
+            salt = os.urandom(16)
+        hashed = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100_000)
+        return base64.b64encode(salt + hashed).decode()  # Guardamos salt+hash
+
+    def verify_password(self,stored: str, provided_password: str) -> bool:
+        stored_bytes = base64.b64decode(stored.encode())
+        salt = stored_bytes[:16]
+        stored_hash = stored_bytes[16:]
+        new_hash = hashlib.pbkdf2_hmac('sha256', provided_password.encode(), salt, 100_000)
+        return stored_hash == new_hash
+
 
     def handle_signup(self, data):
         code, user, password = data.split('~')
         if user in self.users:
             send = f'ERRR~User already exists: {user}'
         else:
-            self.users[user] = password
+            self.users[user] = self.hash_password(password)
             self.save_users()
             send ='SGSC'
         send_with_AES(self.sock,send,self.shared_key)
