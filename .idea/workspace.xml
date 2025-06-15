@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="302bdc76-f2a1-47f2-abf5-74017e3adb26" name="Changes" comment="First finish">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlignEngineOutput.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlignEngineOutput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Button.py" beforeDir="false" afterPath="$PROJECT_DIR$/Button.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cameras.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cameras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClearAsteroids.py" beforeDir="false" afterPath="$PROJECT_DIR$/ClearAsteroids.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CryptoUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/CryptoUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EmptyGarbage.py" beforeDir="false" afterPath="$PROJECT_DIR$/EmptyGarbage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FixWiring.py" beforeDir="false" afterPath="$PROJECT_DIR$/FixWiring.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Imposter_Crewmate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Imposter_Crewmate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Input_Box.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input_Box.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lobby.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lobby.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Login.py" beforeDir="false" afterPath="$PROJECT_DIR$/Login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Map.py" beforeDir="false" afterPath="$PROJECT_DIR$/Map.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Meeting_Room.py" beforeDir="false" afterPath="$PROJECT_DIR$/Meeting_Room.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/Menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerHandleLogIn.py" beforeDir="false" afterPath="$PROJECT_DIR$/ServerHandleLogIn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TEST.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/BigSpace-rPKx.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/HackbotFreeTrial-8MgA2.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/Hunger Games.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/Impacted2.0.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/MaldiniBold-OVZO6.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/Rubik-ExtraBold.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/RufingPersonalUse-AL5Dp.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Fonts/ZOMBIE.TTF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_amongus.py" beforeDir="false" afterPath="$PROJECT_DIR$/server_amongus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.pkl" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AlonGiss&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AlonGiss/AmongUs.git&quot;,
+    &quot;accountId&quot;: &quot;bacab388-9595-4e42-b94c-a2d10e496a8d&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2xK1MPfCE0l4wpydQWxNevJfScq" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.AlignEngineOutput.executor&quot;: &quot;Run&quot;,
+    &quot;Python.AmongUS_player.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ClearAsteroids.executor&quot;: &quot;Run&quot;,
+    &quot;Python.CryptoUtils.executor&quot;: &quot;Run&quot;,
+    &quot;Python.EmptyGarbage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.FixWiring.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Game.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Input_Box.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Lobby.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Login.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Meeting_Room.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Menu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Player.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ServerHandleLogIn.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Python.client.executor&quot;: &quot;Run&quot;,
+    &quot;Python.error_screen.executor&quot;: &quot;Run&quot;,
+    &quot;Python.server_amongus.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/AmongUS&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\AmongUS" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\AmongUS\assets" />
+      <recent name="E:\AmongUS" />
+      <recent name="F:\AmongUS\assets\player_images" />
+      <recent name="F:\AmongUS" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-ce3d9afa04ac-ba05f1cad1b1-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.20224.347" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="302bdc76-f2a1-47f2-abf5-74017e3adb26" name="Changes" comment="" />
+      <created>1747671902503</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747671902503</updated>
+    </task>
+    <task id="LOCAL‎-00001" summary="report button">
+      <option name="closed" value="true" />
+      <created>1749730234656</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL‎-00001" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749730234656</updated>
+    </task>
+    <task id="LOCAL‎-00002" summary="Disconnect added,win anim,errors">
+      <option name="closed" value="true" />
+      <created>1749751860431</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL‎-00002" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749751860431</updated>
+    </task>
+    <task id="LOCAL‎-00003" summary="map button, and cameras">
+      <option name="closed" value="true" />
+      <created>1749761311568</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL‎-00003" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749761311568</updated>
+    </task>
+    <task id="LOCAL‎-00004" summary="map button, and cameras">
+      <option name="closed" value="true" />
+      <created>1749761332646</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL‎-00004" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749761332646</updated>
+    </task>
+    <task id="LOCAL‎-00005" summary="LogIn process">
+      <option name="closed" value="true" />
+      <created>1749763289777</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL‎-00005" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749763289777</updated>
+    </task>
+    <task id="LOCAL‎-00006" summary="Server disconnect error, login and sign in">
+      <option name="closed" value="true" />
+      <created>1749822419273</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL‎-00006" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749822419273</updated>
+    </task>
+    <task id="LOCAL‎-00007" summary="First finish">
+      <option name="closed" value="true" />
+      <created>1749831916494</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL‎-00007" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1749831916494</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="report button" />
+    <MESSAGE value="Disconnect added,win anim,errors" />
+    <MESSAGE value="map button, and cameras" />
+    <MESSAGE value="LogIn process" />
+    <MESSAGE value="Server disconnect error, login and sign in" />
+    <MESSAGE value="First finish" />
+    <option name="LAST_COMMIT_MESSAGE" value="First finish" />
+  </component>
+</project>
