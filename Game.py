@@ -40,6 +40,7 @@ class Game:
         self.emergency_button1 = Button(self.screen,(880, 510, 83, 82),image=pygame.image.load(r'assets/Images/UI/emergency_icon.png'))
         self.map_button = Button(self.screen,(880, 50, 83, 82),image=pygame.image.load('assets/Images/UI/map_button.png'))
         self.map_icon = Map(self.screen,self.player)
+
         self.map_active = False
         self.report_button = False
         self.map = None

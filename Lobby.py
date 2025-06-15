@@ -67,7 +67,7 @@ class Lobby:
                 self.exit()
 
             t.join()
-            pygame.quit()
+
             return self.player,self.players
 
         except Exception as err:

@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="302bdc76-f2a1-47f2-abf5-74017e3adb26" name="Changes" comment="Second finish">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/Menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AmongUS_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/AmongUS_player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lobby.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lobby.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tasks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server_amongus.py" beforeDir="false" afterPath="$PROJECT_DIR$/server_amongus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/users.pkl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +176,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1750000396625</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL‎-00010" summary="Second finish">
+      <option name="closed" value="true" />
+      <created>1750003592457</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL‎-00010" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1750003592457</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -248,7 +248,10 @@ def start_player(data, sock):
     room = data.decode().split('~')[1]
     color = ''
     while color not in COLORS or color in rooms_socks[room].keys():
-        color = random.choice(COLORS)
+        if COLORS:
+            color = random.choice(COLORS)
+        else:
+            print("⚠️ No COLORS available to choose from")
 
     rooms_socks[room][color] = sock
 

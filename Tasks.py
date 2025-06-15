@@ -21,10 +21,21 @@ TASKS = [
     "Clear the Asteroids"
 ]
 
-
+TASKS1 = [
+    #"Turn On The Lights",
+    #"Stabilize The Ship's Navigation",
+    #"Reboot The Wifi",
+    "Empty The Garbage",
+    "Fix The Electricity Wires",
+    #"Divert Power To Reactor",
+    "Align Engine Output",
+    #"Fuel Lower Engine",
+    "Clear the Asteroids"
+]
 
 class Tasks:
     def __init__(self,screen,num_of_tasks):
+        TASKS = TASKS1.copy()
         self.screen = screen
         self.num_of_tasks = num_of_tasks
         self.tasks_finished = False
@@ -53,6 +64,7 @@ class Tasks:
         self.tasks_postions = [(629,339,'Fix The Electricity Wires'),(584,618,"Empty The Garbage"),(770,144,"Clear the Asteroids"),(170,192,"Align Engine Output")]
 
         for i in range(self.num_of_tasks):
+            print(TASKS)
             task = TASKS[random.randint(0,len(TASKS)-1)]
             TASKS.remove(task)
             self.task_array[task] = self.create_task_instance_by_name(task)

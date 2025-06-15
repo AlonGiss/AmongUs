@@ -1,4 +1,3 @@
-
 from Game import Game
 from Button import Button
 from Menu import Menu
@@ -19,21 +18,30 @@ def main():
         username,password = login.main_loop()
         game = True
         while game:
-            lobby = start_menu(sock)
-            player,players = start_lobby(lobby,sock,admin)
-            if 'CRTE' in lobby:
-                lobby = lobby.split('~')[1]
-            game = start_game(sock,player,players,lobby)
+            game_p(sock,admin)
+
 
     except Exception as err:
         import error_screen
         print(f"Unexpected disconnection: {err}")
         error_screen.show_server_disconnection_error()
 
+def game_p(sock,admin):
+    sock.settimeout(None)
+    lobby = start_menu(sock)
+    player, players = start_lobby(lobby, sock, admin)
+    if 'CRTE' in lobby:
+        lobby = lobby.split('~')[1]
+    game = start_game(sock, player, players, lobby)
 
 def start_game(sock,player,players,lobby):
-    game = Game(sock,lobby,player,len(players.keys()))
-    return game.main_game()
+    try:
+        game = Game(sock,lobby,player,len(players.keys()))
+        return game.main_game()
+    except Exception as err:
+        import error_screen
+        print(f"Unexpected: {err}")
+        error_screen.show_server_disconnection_error()
 
 def start_lobby(lobby,sock,admin):
     if 'CRTE' in lobby:
