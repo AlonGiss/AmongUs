@@ -87,7 +87,7 @@ def protocol_build(sock):
             if b'FTSK' in data:
                 mission_completed(data)
             if b'DESS' in data:
-                put_messages_in_room(room, f'DESS~{data.decode().split('~')[1]}'.encode())
+                put_messages_in_room(room, f"DESS~{data.decode().split('~')[1]}".encode())
             if b'DISS' in data:
                 cleanup_player(room,player_color,sock)
             if b'WINN' in data:

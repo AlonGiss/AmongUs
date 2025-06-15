@@ -157,7 +157,7 @@ class Menu:
         return rooms
 
     def show_text(self, text, x, y, size=25,color='WHITE', with_box=False):
-        font = pygame.font.Font(FONT, size,bold=True)
+        font = pygame.font.Font(FONT, size)
         super_texto = font.render(text, True, color)
 
         if with_box:

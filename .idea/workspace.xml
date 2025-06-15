@@ -4,39 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="302bdc76-f2a1-47f2-abf5-74017e3adb26" name="Changes" comment="First finish">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AlignEngineOutput.py" beforeDir="false" afterPath="$PROJECT_DIR$/AlignEngineOutput.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Button.py" beforeDir="false" afterPath="$PROJECT_DIR$/Button.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cameras.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cameras.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClearAsteroids.py" beforeDir="false" afterPath="$PROJECT_DIR$/ClearAsteroids.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CryptoUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/CryptoUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EmptyGarbage.py" beforeDir="false" afterPath="$PROJECT_DIR$/EmptyGarbage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FixWiring.py" beforeDir="false" afterPath="$PROJECT_DIR$/FixWiring.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/Game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Imposter_Crewmate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Imposter_Crewmate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input_Box.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input_Box.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lobby.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lobby.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Login.py" beforeDir="false" afterPath="$PROJECT_DIR$/Login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Map.py" beforeDir="false" afterPath="$PROJECT_DIR$/Map.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Meeting_Room.py" beforeDir="false" afterPath="$PROJECT_DIR$/Meeting_Room.py" afterDir="false" />
+    <list default="true" id="302bdc76-f2a1-47f2-abf5-74017e3adb26" name="Changes" comment="Second finish">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/Menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerHandleLogIn.py" beforeDir="false" afterPath="$PROJECT_DIR$/ServerHandleLogIn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TEST.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/BigSpace-rPKx.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/HackbotFreeTrial-8MgA2.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/Hunger Games.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/Impacted2.0.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/MaldiniBold-OVZO6.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/Rubik-ExtraBold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/RufingPersonalUse-AL5Dp.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Fonts/ZOMBIE.TTF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server_amongus.py" beforeDir="false" afterPath="$PROJECT_DIR$/server_amongus.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users.pkl" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,7 +156,23 @@
       <option name="project" value="LOCAL‎" />
       <updated>1749831916494</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL‎-00008" summary="Second finish">
+      <option name="closed" value="true" />
+      <created>1750000357382</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL‎-00008" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1750000357382</updated>
+    </task>
+    <task id="LOCAL‎-00009" summary="Second finish">
+      <option name="closed" value="true" />
+      <created>1750000396625</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL‎-00009" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1750000396625</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,6 +193,7 @@
     <MESSAGE value="LogIn process" />
     <MESSAGE value="Server disconnect error, login and sign in" />
     <MESSAGE value="First finish" />
-    <option name="LAST_COMMIT_MESSAGE" value="First finish" />
+    <MESSAGE value="Second finish" />
+    <option name="LAST_COMMIT_MESSAGE" value="Second finish" />
   </component>
 </project>
